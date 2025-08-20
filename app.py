@@ -1,5 +1,3 @@
-# app.py: The Grocery Manager AI (with Meal Planner and List Display)
-
 import streamlit as st
 import google.generativeai as genai
 
@@ -12,50 +10,39 @@ with st.sidebar:
     st.title("🛒 AI Grocery Helper")
     st.markdown("""
     Welcome! I'm your smart grocery assistant.
-    
-    **What I can do:**
     - Keep track of your grocery list.
     - Suggest recipes based on items you have.
     - Organize your list by supermarket aisle.
     - Plan your meals for the week!
     """)
-    
     st.divider()
 
-    # --- NEW FEATURE 1: Weekly Meal Planner Button ---
     if st.button("Plan My Meals for the Week"):
         st.session_state.messages.append({"role": "user", "content": "Please act as a meal planner and create a simple 7-day dinner plan. After you provide the plan, generate a complete grocery list for it."})
         st.rerun()
-    # --- END NEW FEATURE 1 ---
 
     if st.button("Estimate Total Price"):
         st.session_state.messages.append({"role": "user", "content": "Based on my list, what is the estimated total price?"})
         st.rerun()
 
     if st.button("Clear Conversation"):
-        st.session_state.messages = [] 
-        st.session_state.grocery_list = "Your grocery list is currently empty." # Clear the list too
+        st.session_state.messages = []
+        st.session_state.grocery_list = "Your grocery list is currently empty."
         st.rerun()
 
     st.divider()
 
-    # --- NEW FEATURE 2: Clean Grocery List Display ---
     st.header("My Grocery List")
     if "grocery_list" not in st.session_state:
         st.session_state.grocery_list = "Your grocery list is currently empty."
 
-    # This button will ask the AI to summarize the list from the chat
     if st.button("Update List Display"):
-        # Create a new prompt specifically for summarizing the list
         summary_prompt = "Based on our entire conversation, please give me just the final, clean, and complete grocery list as a simple bulleted list. Do not add any other text, just the list."
-        
-        # Call the model
         model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(str(st.session_state.messages) + "\n\n" + summary_prompt)
         st.session_state.grocery_list = response.text
 
     st.markdown(st.session_state.grocery_list)
-    # --- END NEW FEATURE 2 ---
 
 # --- MAIN APP TITLE ---
 st.title("🤖 My Gemini Chatbot")
@@ -80,7 +67,7 @@ if user_prompt := st.chat_input("What do you need?"):
     st.session_state.messages.append({"role": "user", "content": user_prompt})
     with st.chat_message("user"):
         st.markdown(user_prompt)
-    
+
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             try:
