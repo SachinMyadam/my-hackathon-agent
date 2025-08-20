@@ -1,5 +1,8 @@
+# app.py: Final Version (with Button Fix)
+
 import streamlit as st
 import google.generativeai as genai
+from streamlit_copy_to_clipboard import st_copy_to_clipboard
 
 # --- CONFIGURATION ---
 st.set_page_config(page_title="Grocery Helper", page_icon="🛒")
@@ -26,7 +29,7 @@ with st.sidebar:
         st.rerun()
 
     if st.button("Clear Conversation"):
-        st.session_state.messages = []
+        st.session_state.messages = [] 
         st.session_state.grocery_list = "Your grocery list is currently empty."
         st.rerun()
 
@@ -41,8 +44,12 @@ with st.sidebar:
         model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(str(st.session_state.messages) + "\n\n" + summary_prompt)
         st.session_state.grocery_list = response.text
+        st.rerun() # Rerun to show the updated list immediately
 
     st.markdown(st.session_state.grocery_list)
+    
+    if st.session_state.grocery_list != "Your grocery list is currently empty.":
+        st_copy_to_clipboard(st.session_state.grocery_list, "📋 Copy List")
 
 # --- MAIN APP TITLE ---
 st.title("🤖 My Gemini Chatbot")
@@ -59,15 +66,20 @@ except Exception:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+# Display previous messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
+# Handle new user input from the chat box
 if user_prompt := st.chat_input("What do you need?"):
     st.session_state.messages.append({"role": "user", "content": user_prompt})
     with st.chat_message("user"):
         st.markdown(user_prompt)
 
+# --- NEW LOGIC TO GENERATE RESPONSE ---
+# This new block checks if the last message is from the user and then generates a response
+if st.session_state.messages and st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             try:
@@ -82,7 +94,10 @@ if user_prompt := st.chat_input("What do you need?"):
                 - Keep your responses friendly and clear.
                 """
                 
+                # We get the last user message to generate the response
+                last_user_message = st.session_state.messages[-1]["content"]
                 full_conversation = st.session_state.messages
+                
                 model_prompt = persona + "\n\nHere is the conversation so far:\n" + str(full_conversation)
                 
                 response = model.generate_content(model_prompt)
