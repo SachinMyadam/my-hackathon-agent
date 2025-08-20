@@ -1,4 +1,4 @@
-# app.py: Final Submission Version
+# app.py: Final Submission Version (with Rupee Fix)
 
 import streamlit as st
 import google.generativeai as genai
@@ -97,7 +97,7 @@ if st.session_state.messages and st.session_state.messages[-1]["role"] != "assis
                 - The user's list is the conversation history. When they ask "what's on my list?", review the chat history to tell them.
                 - If the user asks you to organize the list, group items by common supermarket categories (e.g., Produce, Dairy, Bakery, Meat, Canned Goods).
                 - If the user asks for a recipe, provide a simple one based on the ingredients they mention.
-                - If the user asks for a price estimate, provide a rough guess for the total cost of the items on the list.
+                - If the user asks for a price estimate, provide a rough guess for the total cost of the items on the list. Always show the prices in Indian Rupees (₹).
                 - If the user asks you to be a meal planner, create a 7-day dinner plan and then provide a full grocery list for all the ingredients needed for that plan.
                 - Keep your responses friendly and clear.
                 """
