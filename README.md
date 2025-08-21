@@ -28,3 +28,6 @@ After documenting this show-stopping issue with screenshots, we made an executiv
 - **Framework:** Streamlit
 - **AI Model:** Google Gemini 1.5 Flash
 - **Deployment:** Streamlit Community Cloud
+
+- ### Proof Screenshot
+<img width="1440" height="716" alt="Portia proof scrrenshot" src="https://github.com/user-attachments/assets/d041c870-3357-4bb7-8135-435a6cbc60da" />
